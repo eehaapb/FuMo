@@ -32,6 +32,9 @@ class ParticleTrajectorySim(Node):
 
         self.dt = 0.1
 
+        self.x_mean = []
+        self.y_mean = []
+
         self.t_ = [[0] * 100]
         self.x_prev = [[0] * 100]
         self.y_prev = [[0] * 100]
@@ -73,6 +76,9 @@ class ParticleTrajectorySim(Node):
         self.y_prev.append(y_curr_estimates)
         self.psi_prev.append(psi_curr_estimates)
 
+        self.x_mean.append(np.mean(x_curr_estimates))
+        self.y_mean.append(np.mean(y_curr_estimates))
+
     def rpm_to_rads(self, rpm):
         return rpm/60*2*pi
 
@@ -85,14 +91,11 @@ def main():
         res_x = np.array(traj_sim.x_prev)
         res_y = np.array(traj_sim.y_prev)
 
-        ex_traj_x = res_x[:, 0]
-        ex_traj_y = res_y[:, 0]
-
         res_x = res_x[np.array([700,1400,2100]), :]
         res_y = res_y[np.array([700,1400,2100]), :]
 
-        plt.plot(ex_traj_x, ex_traj_y, label="example robot trajectory")
-        plt.scatter(res_x, res_y, s=5, c='r', label="robot position estimates at t= 700, 1400 and 2100")
+        plt.plot(traj_sim.x_mean, traj_sim.y_mean, label="mean robot trajectory")
+        plt.scatter(res_x, res_y, s=2, c='r', label="robot position estimates at t = 700, 1400 and 2100")
         plt.xlabel("x (m)")
         plt.ylabel("y (m)")
         plt.legend()
