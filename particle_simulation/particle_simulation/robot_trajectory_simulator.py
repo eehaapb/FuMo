@@ -32,18 +32,10 @@ class ParticleTrajectorySim(Node):
 
         self.dt = 0.1
 
-        self.t_ = []
-        self.x_prev = []
-        self.y_prev = []
-        self.psi_prev = []
-
-        self.zeros = [0] * 100
-
-        self.t_.append(self.zeros)
-        self.x_prev.append(self.zeros)
-        self.y_prev.append(self.zeros)
-        self.psi_prev.append(self.zeros)
-
+        self.t_ = [[0] * 100]
+        self.x_prev = [[0] * 100]
+        self.y_prev = [[0] * 100]
+        self.psi_prev = [[0] * 100]
 
         self.wheel_radius = 0.1
         self.axle_length = 0.4
@@ -73,20 +65,13 @@ class ParticleTrajectorySim(Node):
                 y_curr = self.y_prev[-1][i] + (delta_h_trans + eps_trans[i]) * sin(self.psi_prev[-1][i] + delta_h_rot1 + eps_rot1[i])
                 psi_curr = self.psi_prev[-1][i] + delta_h_rot1 + eps_rot1[i] + delta_h_rot2 + eps_rot2[i]
 
-                # print('x_curr: '+ str(x_curr) +', y_curr: '+ str(y_curr) +', psi_curr: '+ str(psi_curr))
                 x_curr_estimates.append(x_curr)
                 y_curr_estimates.append(y_curr)
                 psi_curr_estimates.append(psi_curr)
-        
-        print(len(x_curr_estimates))
-        print(len(self.x_prev))
-            
 
         self.x_prev.append(x_curr_estimates)
         self.y_prev.append(y_curr_estimates)
         self.psi_prev.append(psi_curr_estimates)
-
-
 
     def rpm_to_rads(self, rpm):
         return rpm/60*2*pi
@@ -97,17 +82,17 @@ def main():
         traj_sim = ParticleTrajectorySim()
         rclpy.spin(traj_sim)
     except KeyboardInterrupt:
-        print(traj_sim.x_prev)
         res_x = np.array(traj_sim.x_prev)
         res_y = np.array(traj_sim.y_prev)
 
-        print(np.shape(res_x))
+        ex_traj_x = res_x[:, 0]
+        ex_traj_y = res_y[:, 0]
+
         res_x = res_x[np.array([700,1400,2100]), :]
         res_y = res_y[np.array([700,1400,2100]), :]
-        print(np.shape(res_y))
 
-
-        plt.plot(res_x,res_y, 'ro')
+        plt.plot(ex_traj_x, ex_traj_y)
+        plt.plot(res_x,res_y, marker='ro', markersize='5')
             
 
 
