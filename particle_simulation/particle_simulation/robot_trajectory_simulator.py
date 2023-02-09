@@ -91,15 +91,13 @@ def main():
         res_x = res_x[np.array([700,1400,2100]), :]
         res_y = res_y[np.array([700,1400,2100]), :]
 
-        plt.plot(ex_traj_x, ex_traj_y)
-        plt.plot(res_x,res_y, marker='ro', markersize='5')
+        plt.plot(ex_traj_x, ex_traj_y, label="example robot trajectory")
+        plt.scatter(res_x, res_y, s=5, c='r', label="robot position estimates at t= 700, 1400 and 2100")
+        plt.xlabel("x (m)")
+        plt.ylabel("y (m)")
+        plt.legend()
             
-
-
-
         plt.show()
-        
-
 
 if __name__ == "__main__":
     main()
